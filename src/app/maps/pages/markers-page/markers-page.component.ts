@@ -1,6 +1,15 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Map, LngLat, Marker } from 'mapbox-gl';
 
+interface MarkerAndColor {
+  color: string;
+  marker: Marker;
+}
+interface PlainMarker {
+  color: string;
+  lngLat: number[];
+}
+
 @Component({
   standalone: false,
 
@@ -10,29 +19,33 @@ import { Map, LngLat, Marker } from 'mapbox-gl';
 export class MarkersPageComponent implements AfterViewInit {
   @ViewChild('map') divMap?: ElementRef;
 
+  public markers: MarkerAndColor[] = [];
   public zoom: number = 10;
   public map?: Map;
   public currentLngLat: LngLat = new LngLat(-74.1, 4.65);
 
   ngAfterViewInit(): void {
-    if (!this.divMap) throw new Error('No divMap reference');
+    if (typeof document !== 'undefined') {
+      if (!this.divMap) throw new Error('No divMap reference');
 
-    this.map = new Map({
-      container: this.divMap.nativeElement, // container ID
-      style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      center: this.currentLngLat, // starting position [lng, lat]
-      zoom: this.zoom, // starting zoom
-    });
+      this.map = new Map({
+        container: this.divMap.nativeElement, // container ID
+        style: 'mapbox://styles/mapbox/streets-v12', // style URL
+        center: this.currentLngLat, // starting position [lng, lat]
+        zoom: this.zoom, // starting zoom
+      });
+      this.readFromLocalStorage();
 
-    // const markerHtml = document.createElement('div');
-    // markerHtml.innerHTML = 'Fernando herrera';
+      // const markerHtml = document.createElement('div');
+      // markerHtml.innerHTML = 'Fernando herrera';
 
-    // const marker = new Marker({
-    //   color: '#224422',
-    //   element: markerHtml,
-    // })
-    //   .setLngLat(this.currentLngLat)
-    //   .addTo(this.map);
+      // const marker = new Marker({
+      //   color: '#224422',
+      //   element: markerHtml,
+      // })
+      //   .setLngLat(this.currentLngLat)
+      //   .addTo(this.map);
+    }
   }
 
   createMarker() {
@@ -55,6 +68,47 @@ export class MarkersPageComponent implements AfterViewInit {
       draggable: true,
     })
       .setLngLat(lngLat)
-      .addTo(this.map!);
+      .addTo(this.map);
+    this.markers.push({
+      color,
+      marker,
+    });
+    this.saveToLocalStorage();
+    marker.on('dragend', () => {
+      this.saveToLocalStorage();
+    });
+  }
+
+  deleteMarker(index: number) {
+    this.markers[index].marker.remove();
+    this.markers.splice(index, 1);
+  }
+
+  flyTo(marker: Marker) {
+    this.map?.flyTo({
+      zoom: 15,
+      center: marker.getLngLat(),
+      essential: true,
+    });
+  }
+  saveToLocalStorage() {
+    const plainMarkers: PlainMarker[] = this.markers.map(
+      ({ color, marker }) => {
+        return {
+          color,
+          lngLat: marker.getLngLat().toArray(),
+        };
+      }
+    );
+    localStorage.setItem('plainMarkers', JSON.stringify(plainMarkers));
+  }
+  readFromLocalStorage() {
+    const plainMarkersString = localStorage.getItem('plainMarkers') ?? '[]';
+    const plainMarkers: PlainMarker[] = JSON.parse(plainMarkersString);
+    plainMarkers.forEach(({ color, lngLat }) => {
+      const [lng, lat] = lngLat;
+      const coords = new LngLat(lng, lat);
+      this.addMarker(coords, color);
+    });
   }
 }
