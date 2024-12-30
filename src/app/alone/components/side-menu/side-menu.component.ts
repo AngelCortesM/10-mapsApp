@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 interface MenuItem {
   name: string;
   route: string;
 }
 @Component({
-  selector: 'maps-side-menu',
-  standalone: false,
-
+  selector: 'side-menu',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './side-menu.component.html',
   styleUrl: './side-menu.component.css',
 })
 export class SideMenuComponent {
+  @Input()
   public menuItems: MenuItem[] = [
     {
       route: '/maps/fullscreen',
@@ -28,6 +31,10 @@ export class SideMenuComponent {
     {
       route: '/maps/properties',
       name: 'Houses',
+    },
+    {
+      route: '/alone',
+      name: 'Alone Page',
     },
   ];
 }
