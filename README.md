@@ -4,7 +4,7 @@ No usar directamente en angularCLI a menos que estén creadas las variables de e
 
 ## Pasos:
 1. Clonar el .env.template y renombrarlo a .env
-2. Llenar las variables en torno acorde
+2. Llenar las variables entorno acorde, deben ingresar a Mapbox y crear o usar un token
 3. Crear angular Envs (opcional)
 ````
 npm run envs
