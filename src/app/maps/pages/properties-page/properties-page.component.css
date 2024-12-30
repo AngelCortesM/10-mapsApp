@@ -1,0 +1,13 @@
+.card {
+  background-color: rgba(153, 244, 159, 0.793);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+h3{
+  text-shadow: 0 3px 15px  black;
+}
+
+.house{
+  border-radius: 10px;
+}
