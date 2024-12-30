@@ -57,10 +57,6 @@ export class PropertiesPageComponent {
       description: 'Casa moderna en Bogotá, Colombia',
       lngLat: [-74.072, 4.711],
     },
-    {
-      title: 'Casa en la playa, Colombia',
-      description: 'Casa en la playa en Santa Marta, Colombia',
-      lngLat: [-74.211, 11.241],
-    },
+
   ];
 }

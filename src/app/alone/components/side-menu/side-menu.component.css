@@ -1,5 +1,12 @@
-ul {
+li {
   cursor: pointer;
   transition: 0.3s all;
+
+}
+ul{
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 999;
 }
